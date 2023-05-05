@@ -13,15 +13,25 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/project/:id', (req, res) => )
+router.get('/project/:id', async (req, res) => {
+    try {
+        const projectData = await Project.findByPk(req.params.id);
+        const project = projectData.map((project) => project.get({ plain: true }));
 
-// router.get('/login', (req, res) => {
-//     if (req.session.logged_in) {
-//         res.redirect('/');
-//         return;
-//     }
+        res.render('project', { project: project });
+    } catch (err) {
+        res.status(500).json(err);
 
-//     res.render('login');
-// });
+    }
+})
+
+router.get('/login', (req, res) => {
+    if (req.session.logged_in) {
+        res.redirect('/');
+        return;
+    }
+
+    res.render('login');
+});
 
 module.exports = router;
